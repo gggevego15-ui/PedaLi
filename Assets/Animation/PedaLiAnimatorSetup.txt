@@ -1,39 +1,33 @@
-PedaLi Animator setup (starter)
-=================================
+PedaLi pixel animation setup
+=============================
 
-Create an Animator Controller named PedaLiAnimator.controller and add these parameters:
-- IsMoving (Bool)
-- IsJumping (Bool)
-- IsGrabbing (Bool)
-- VerticalSpeed (Float)
+Runtime sprite animation is handled by Assets/Scripts/PedaLiSpriteAnimator.cs.
+This frame-based animator does not require an Animator Controller.
 
-Suggested states / clips:
-- Idle       : default state
-- Run        : looping horizontal movement
-- Jump       : jump / airborne pose
-- Grab       : hanging from a ledge
-- Climb      : upward climbing animation (optional)
-- Fall       : falling animation (optional)
+1. Import each character sprite sheet as Texture Type = Sprite (2D and UI).
+2. Set Filter Mode = Point (no filter), Compression = None, and disable mipmaps.
+3. Open Sprite Editor and slice the sheet by Grid By Cell Size (or automatic slicing if frames vary).
+4. Keep the same Pixels Per Unit and consistent frame dimensions for all animations.
+5. Create a child object named Visual if desired. Add SpriteRenderer and PedaLiSpriteAnimator to that object.
+6. Assign the SpriteRenderer to PedaLiController, and assign PedaLiSpriteAnimator to its Pixel Animator field.
+7. Drag frames into each animation's Frames array in playback order. Set the FPS and Loop options.
 
-Suggested transitions:
-- Idle -> Run: IsMoving == true
-- Run -> Idle: IsMoving == false
-- Any State -> Grab: IsGrabbing == true
-- Grab -> Idle: IsGrabbing == false AND IsJumping == false AND IsMoving == false
-- Any State -> Jump: IsJumping == true
-- Jump -> Idle: IsJumping == false AND IsMoving == false
-- Jump -> Run: IsJumping == false AND IsMoving == true
+Animation arrays:
+- Idle: breathing / standing frames, looping, around 4–6 FPS.
+- Run: left/right run cycle, looping, around 8–12 FPS.
+- Jump: take-off / airborne frames, usually non-looping.
+- Grab: hanging idle frames, looping.
+- Climb: hand-over-hand upward movement, looping.
+- Fall: falling pose or short loop.
 
-For a pixel-art sprite:
-1. Select the sprite texture and set Texture Type = Sprite (2D and UI).
-2. Set Filter Mode = Point (no filter) and Compression = None.
-3. Use a consistent Pixels Per Unit value for every frame.
-4. Disable mipmaps for the sprite texture.
-5. Keep the sprite's sorting order in front of the 3D background.
-6. If using a sprite sheet, open Sprite Editor and slice by grid/cell size.
-7. Assign the Animator to the character and assign the same object a CharacterController.
+State selection is driven by PedaLiController:
+- Idle when grounded and not moving.
+- Run when grounded and moving.
+- Jump while moving upward in the air.
+- Fall while moving downward in the air.
+- Grab while holding a ledge without horizontal input.
+- Climb while grabbing and moving horizontally (the starter controller's climb motion is upward).
 
-Ledge grabbing:
-- Add a child Transform named LedgeCheck where the character's hands should reach.
-- Put climbable ledge colliders on a dedicated layer and select it in Ledge Layer.
-- Set Require Ledge To Grab = true. For a first movement test, set it false.
+The previous Animator Controller setup can still be used for additional effects, but avoid having both the Animator Controller and PedaLiSpriteAnimator animate the same SpriteRenderer.sprite property at the same time.
+
+No sprite artwork is included yet; the animation system needs actual sliced frame sprites assigned in the Inspector.
