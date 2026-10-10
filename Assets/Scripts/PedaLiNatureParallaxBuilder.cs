@@ -62,6 +62,17 @@ public class PedaLiNatureParallaxBuilder : MonoBehaviour
     private Color forestColor;
     private Color cloudColor;
 
+    /// <summary>Configure the procedural backdrop when it is created at runtime.</summary>
+    public void Configure(Transform target, PedaLiVerticalCamera camera, float mountainsHeight = 35f, float snowHeight = 75f)
+    {
+        playerTarget = target;
+        cameraController = camera;
+        mountainsStartHeight = mountainsHeight;
+        snowPeaksStartHeight = snowHeight;
+        startingBiome = Biome.Jungle;
+        autoSwitchBiome = true;
+    }
+
     private void Start()
     {
         CurrentBiome = startingBiome;
