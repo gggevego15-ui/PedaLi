@@ -26,6 +26,11 @@ public class PedaLiController : MonoBehaviour
 
     private CharacterController characterController;
     private float horizontalInput;
+    private float keyboardHorizontalInput;
+    private bool mobileLeftHeld;
+    private bool mobileRightHeld;
+    private bool mobileGrabHeld;
+    private bool keyboardGrabHeld;
     private bool grabHeld;
     private bool jumpQueued;
     private float verticalVelocity;
@@ -47,6 +52,8 @@ public class PedaLiController : MonoBehaviour
     private void Update()
     {
         ReadKeyboardForEditor();
+        horizontalInput = mobileLeftHeld == mobileRightHeld ? keyboardHorizontalInput : (mobileLeftHeld ? -1f : 1f);
+        grabHeld = mobileGrabHeld || keyboardGrabHeld;
         bool nearLedge = !requireLedgeToGrab || (ledgeCheck != null &&
             Physics.CheckSphere(ledgeCheck.position, ledgeCheckRadius, ledgeLayer));
 
@@ -85,26 +92,22 @@ public class PedaLiController : MonoBehaviour
     private void ReadKeyboardForEditor()
     {
         // Keyboard controls make it possible to test in the Unity Editor.
-        if (Input.GetKey(KeyCode.LeftArrow) || Input.GetKey(KeyCode.A)) horizontalInput = -1f;
-        else if (Input.GetKey(KeyCode.RightArrow) || Input.GetKey(KeyCode.D)) horizontalInput = 1f;
-        else horizontalInput = 0f;
+        if (Input.GetKey(KeyCode.LeftArrow) || Input.GetKey(KeyCode.A)) keyboardHorizontalInput = -1f;
+        else if (Input.GetKey(KeyCode.RightArrow) || Input.GetKey(KeyCode.D)) keyboardHorizontalInput = 1f;
+        else keyboardHorizontalInput = 0f;
 
-        if (Input.GetKey(KeyCode.LeftShift) || Input.GetKey(KeyCode.E))
-            grabHeld = true;
-        else if (!MobileGrabIsHeld())
-            grabHeld = false;
+        keyboardGrabHeld = Input.GetKey(KeyCode.LeftShift) || Input.GetKey(KeyCode.E);
 
         if (Input.GetKeyDown(KeyCode.Space) || Input.GetKeyDown(KeyCode.W) || Input.GetKeyDown(KeyCode.UpArrow))
             Jump();
     }
 
     // Mobile UI calls these methods from PedaLiMobileButton.
-    public void SetMoveLeft(bool held) { if (held) horizontalInput = -1f; else if (horizontalInput < 0f) horizontalInput = 0f; }
-    public void SetMoveRight(bool held) { if (held) horizontalInput = 1f; else if (horizontalInput > 0f) horizontalInput = 0f; }
-    public void SetGrab(bool held) { grabHeld = held; }
+    public void SetMoveLeft(bool held) { mobileLeftHeld = held; }
+    public void SetMoveRight(bool held) { mobileRightHeld = held; }
+    public void SetGrab(bool held) { mobileGrabHeld = held; }
     public void Jump() { jumpQueued = true; }
 
-    private bool MobileGrabIsHeld() { return grabHeld; }
 
     private void UpdateAnimator()
     {
