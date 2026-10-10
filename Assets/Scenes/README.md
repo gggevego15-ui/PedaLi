@@ -14,6 +14,8 @@ Create a Unity 3D scene named `PedaLi`.
 10. Add `PedaLiVerticalCamera` to the Main Camera and drag the Player Transform into its Target field.
 11. Set Target Offset to place the camera behind the player (for example, X = 0, Y = 2, Z = -10). Adjust Smooth Time to tune how softly it follows.
 12. To add parallax, create separate scenery layer GameObjects (for example, distant mountains, midground trees, and foreground leaves) and assign them to the Parallax Layers array. Start with Follow Factor around 0.1–0.2 for distant scenery and 0.35–0.6 for nearer scenery. A factor of 0 leaves a layer fixed in world space.
-13. Keep scenery layers outside the Player hierarchy. If the camera reaches the end of a level, adjust Vertical Limits; the defaults allow a tall, unrestricted climb.
+13. For a quick procedural backdrop, create an empty GameObject named `NatureBackdrop` behind the player and add `PedaLiNatureParallaxBuilder`. Press Play to generate the sky, two mountain ridges, forest silhouettes, and clouds. Adjust World Width/Height and the color constants in the script to fit your scene.
+14. Expand `NatureBackdrop` and drag `Parallax_FarMountains_Follow10`, `Parallax_NearMountains_Follow22`, `Parallax_Forest_Follow42`, and `Parallax_Clouds_Follow14` into the camera's Parallax Layers array. Set their Follow Factor values to 0.10, 0.22, 0.42, and 0.14 respectively; enable Ignore Depth for each layer. Keep the generated sky out of the array so it stays fixed.
+15. Keep scenery layers outside the Player hierarchy. If the camera reaches the end of a level, adjust Vertical Limits; the defaults allow a tall, unrestricted climb.
 
 This is a source starter, not a complete playable scene or built APK yet.
