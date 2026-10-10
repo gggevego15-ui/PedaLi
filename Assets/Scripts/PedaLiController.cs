@@ -104,6 +104,9 @@ public class PedaLiController : MonoBehaviour
             Jump();
     }
 
+    /// <summary>Allows generated demo scenes to use the grab button without authored ledge-check transforms.</summary>
+    public void SetRequireLedgeToGrab(bool required) { requireLedgeToGrab = required; }
+
     // Mobile UI calls these methods from PedaLiMobileButton.
     public void SetMoveLeft(bool held) { mobileLeftHeld = held; }
     public void SetMoveRight(bool held) { mobileRightHeld = held; }
