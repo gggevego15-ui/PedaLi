@@ -77,7 +77,7 @@ public static class PedaLiGameplayBootstrap
         for (int i = 0; i < 65; i++)
         {
             float x = xs[i % xs.Length];
-            float y = 1.65f + i * 1.25f;
+            float y = 1.35f + i * 1.25f;
             float width = (i % 4 == 0) ? 2.7f : 2.25f;
             Color c = i < 20 ? new Color(0.27f, 0.52f, 0.31f) : i < 45 ? new Color(0.48f, 0.48f, 0.39f) : new Color(0.72f, 0.82f, 0.88f);
             CreatePlatform(parent, "Climb Platform " + (i + 1), new Vector3(x, y, 0.55f), new Vector3(width, 0.32f, 1.0f), c, false);
