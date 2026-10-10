@@ -57,14 +57,14 @@ public static class PedaLiGameplayBootstrap
         player.AddComponent<PedaLiController>();
 
         BuildPlatforms(world.transform);
-        var backdropGO = new GameObject("PedaLi Nature Backdrop");
-        backdropGO.transform.SetParent(world.transform, false);
-        var backdrop = backdropGO.AddComponent<PedaLiNatureParallaxBuilder>();
-        backdrop.Configure(player.transform, null, 34f, 76f);
-
         var cameraFollow = cam.gameObject.GetComponent<PedaLiVerticalCamera>();
         if (cameraFollow == null) cameraFollow = cam.gameObject.AddComponent<PedaLiVerticalCamera>();
         cameraFollow.SetTarget(player.transform);
+
+        var backdropGO = new GameObject("PedaLi Nature Backdrop");
+        backdropGO.transform.SetParent(world.transform, false);
+        var backdrop = backdropGO.AddComponent<PedaLiNatureParallaxBuilder>();
+        backdrop.Configure(player.transform, cameraFollow, 34f, 76f);
 
         BuildTouchUI(player.GetComponent<PedaLiController>());
         Debug.Log("PedaLi runtime gameplay launched. Move with A/D or arrows, jump with Space, grab with E/Shift.");
