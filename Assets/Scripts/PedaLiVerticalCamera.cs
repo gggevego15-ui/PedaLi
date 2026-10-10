@@ -115,6 +115,13 @@ public class PedaLiVerticalCamera : MonoBehaviour
         target = newTarget;
     }
 
+    /// <summary>Replace scenery layers after the biome builder regenerates them.</summary>
+    public void SetParallaxLayers(ParallaxLayer[] layers)
+    {
+        parallaxLayers = layers ?? new ParallaxLayer[0];
+        CacheLayerPositions();
+    }
+
     /// <summary>Reset the parallax reference positions after repositioning the scene.</summary>
     public void RecalibrateParallax()
     {
