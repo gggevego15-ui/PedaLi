@@ -140,11 +140,16 @@ public sealed class PedaLiMainMenu : MonoBehaviour
 
     private void ShowSettings()
     {
-        ShowMessage("SETTINGS", "MUSIC: " + (PlayerPrefs.GetInt("PedaLi.Music", 1) == 1 ? "ON" : "OFF") +
-            "\n\nTap OK to toggle music preference.\nVIBRATION: " + (PlayerPrefs.GetInt("PedaLi.Vibration", 1) == 1 ? "ON" : "OFF") +
-            "\n\nThese preferences are saved for future audio and haptic integration.");
-        AddButtonToModal("Toggle Music", new Vector2(0, -80), () => { PlayerPrefs.SetInt("PedaLi.Music", 1 - PlayerPrefs.GetInt("PedaLi.Music", 1)); ShowSettings(); });
-        AddButtonToModal("Toggle Vibration", new Vector2(0, -170), () => { PlayerPrefs.SetInt("PedaLi.Vibration", 1 - PlayerPrefs.GetInt("PedaLi.Vibration", 1)); ShowSettings(); });
+        ShowMessage("SETTINGS", "Choose your preferences below. Changes are saved automatically.");
+        var message = modal.transform.Find("Modal Message");
+        if (message != null)
+        {
+            var rt = message.GetComponent<RectTransform>();
+            rt.anchorMin = rt.anchorMax = new Vector2(0.5f, 0.68f);
+            rt.sizeDelta = new Vector2(700, 90);
+        }
+        AddButtonToModal("Toggle Music: " + (PlayerPrefs.GetInt("PedaLi.Music", 1) == 1 ? "ON" : "OFF"), new Vector2(0, -45), () => { PlayerPrefs.SetInt("PedaLi.Music", 1 - PlayerPrefs.GetInt("PedaLi.Music", 1)); ShowSettings(); });
+        AddButtonToModal("Toggle Vibration: " + (PlayerPrefs.GetInt("PedaLi.Vibration", 1) == 1 ? "ON" : "OFF"), new Vector2(0, -125), () => { PlayerPrefs.SetInt("PedaLi.Vibration", 1 - PlayerPrefs.GetInt("PedaLi.Vibration", 1)); ShowSettings(); });
     }
 
     private void ShowMessage(string title, string message)
