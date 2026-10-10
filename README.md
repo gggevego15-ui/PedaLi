@@ -6,6 +6,7 @@ PedaLi is a Unity Android climbing-game prototype: a pixel-art character climbs 
 
 - `Assets/Scripts/PedaLiController.cs` — movement, jump, ledge-grab input, and animation-state selection.
 - `Assets/Scripts/PedaLiSpriteAnimator.cs` — frame-based pixel-art animation for Idle, Run, Jump, Grab, Climb, and Fall.
+- `Assets/Scripts/PedaLiVerticalCamera.cs` — smooth vertical camera follow with configurable scenery parallax layers.
 - `Assets/Scripts/PedaLiMobileButton.cs` — touch-button handling for left, right, grab, and jump.
 - `Assets/Animation/PedaLiAnimatorSetup.txt` — sprite slicing, import settings, and animation setup.
 - `Assets/Scenes/README.md` — steps to assemble a first test scene.
