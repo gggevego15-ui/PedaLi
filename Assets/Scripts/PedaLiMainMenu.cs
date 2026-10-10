@@ -175,13 +175,13 @@ public sealed class PedaLiMainMenu : MonoBehaviour
         var tex = new Texture2D(w, h, TextureFormat.RGBA32, false);
         tex.wrapMode = TextureWrapMode.Clamp;
         var pixels = new Color[w * h];
+        Vector2[] centers = { new Vector2(w * 0.25f, h * 0.38f), new Vector2(w * 0.43f, h * 0.58f), new Vector2(w * 0.62f, h * 0.48f), new Vector2(w * 0.78f, h * 0.35f) };
+        float[] radii = { 0.27f, 0.34f, 0.31f, 0.23f };
         for (int y = 0; y < h; y++)
         for (int x = 0; x < w; x++)
         {
             float a = 0f;
             Vector2 p = new Vector2(x, y);
-            Vector2[] centers = { new Vector2(w * 0.25f, h * 0.38f), new Vector2(w * 0.43f, h * 0.58f), new Vector2(w * 0.62f, h * 0.48f), new Vector2(w * 0.78f, h * 0.35f) };
-            float[] radii = { 0.27f, 0.34f, 0.31f, 0.23f };
             for (int k = 0; k < centers.Length; k++)
             {
                 float d = Vector2.Distance(p, centers[k]) / (h * radii[k]);
