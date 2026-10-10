@@ -1,0 +1,39 @@
+PedaLi Animator setup (starter)
+=================================
+
+Create an Animator Controller named PedaLiAnimator.controller and add these parameters:
+- IsMoving (Bool)
+- IsJumping (Bool)
+- IsGrabbing (Bool)
+- VerticalSpeed (Float)
+
+Suggested states / clips:
+- Idle       : default state
+- Run        : looping horizontal movement
+- Jump       : jump / airborne pose
+- Grab       : hanging from a ledge
+- Climb      : upward climbing animation (optional)
+- Fall       : falling animation (optional)
+
+Suggested transitions:
+- Idle -> Run: IsMoving == true
+- Run -> Idle: IsMoving == false
+- Any State -> Grab: IsGrabbing == true
+- Grab -> Idle: IsGrabbing == false AND IsJumping == false AND IsMoving == false
+- Any State -> Jump: IsJumping == true
+- Jump -> Idle: IsJumping == false AND IsMoving == false
+- Jump -> Run: IsJumping == false AND IsMoving == true
+
+For a pixel-art sprite:
+1. Select the sprite texture and set Texture Type = Sprite (2D and UI).
+2. Set Filter Mode = Point (no filter) and Compression = None.
+3. Use a consistent Pixels Per Unit value for every frame.
+4. Disable mipmaps for the sprite texture.
+5. Keep the sprite's sorting order in front of the 3D background.
+6. If using a sprite sheet, open Sprite Editor and slice by grid/cell size.
+7. Assign the Animator to the character and assign the same object a CharacterController.
+
+Ledge grabbing:
+- Add a child Transform named LedgeCheck where the character's hands should reach.
+- Put climbable ledge colliders on a dedicated layer and select it in Ledge Layer.
+- Set Require Ledge To Grab = true. For a first movement test, set it false.
