@@ -113,12 +113,15 @@ public class PedaLiController : MonoBehaviour
 
     private void UpdateAnimator()
     {
-        if (animator == null) return;
-        animator.SetBool(IsMoving, Mathf.Abs(horizontalInput) > 0.01f);
-        animator.SetBool(IsJumping, !characterController.isGrounded && !isGrabbing);
-        animator.SetBool(IsGrabbing, isGrabbing);
-        animator.SetFloat(VerticalSpeed, verticalVelocity);
+        if (animator != null)
+        {
+            animator.SetBool(IsMoving, Mathf.Abs(horizontalInput) > 0.01f);
+            animator.SetBool(IsJumping, !characterController.isGrounded && !isGrabbing);
+            animator.SetBool(IsGrabbing, isGrabbing);
+            animator.SetFloat(VerticalSpeed, verticalVelocity);
+        }
 
+        // Pixel-sprite animation must work even when no Mecanim Animator is assigned.
         if (pixelAnimator != null)
         {
             PedaLiSpriteAnimator.AnimationState state;
