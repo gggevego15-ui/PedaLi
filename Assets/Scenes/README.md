@@ -1,5 +1,11 @@
 # Scene setup
 
+## Quick playable run (recommended)
+
+The main menu's **Start Climbing** button now calls `PedaLiGameplayBootstrap` if no gameplay scene is included in Build Settings. It creates the player, procedural pixel animation frames, 65 reachable platform steps, mobile Left/Right/Grab/Jump buttons, an orthographic follow camera, and the three-biome procedural backdrop at runtime. Keyboard controls work in the Editor too: A/D or arrows to move, Space/W/Up to jump, and E/Left Shift to grab. This runtime-generated run is source code and has not yet been compiled or tested in Unity.
+
+## Manual scene setup
+
 Create a Unity 3D scene named `PedaLi`.
 
 1. Create a Player GameObject and add a CharacterController.
