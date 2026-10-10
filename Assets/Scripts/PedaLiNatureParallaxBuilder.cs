@@ -40,6 +40,9 @@ public class PedaLiNatureParallaxBuilder : MonoBehaviour
 
     private readonly List<Mesh> generatedMeshes = new List<Mesh>();
     private readonly List<Material> generatedMaterials = new List<Material>();
+    private readonly List<Texture2D> generatedTextures = new List<Texture2D>();
+    private Texture2D detailTexture;
+    private Texture2D skyGradientTexture;
 
     private static readonly Color SkyColor = new Color(0.38f, 0.72f, 0.91f);
     private static readonly Color FarMountainColor = new Color(0.43f, 0.66f, 0.65f);
@@ -59,6 +62,9 @@ public class PedaLiNatureParallaxBuilder : MonoBehaviour
 
         generatedMeshes.Clear();
         generatedMaterials.Clear();
+        generatedTextures.Clear();
+        detailTexture = CreateDetailTexture();
+        skyGradientTexture = CreateSkyGradientTexture();
 
         Sky = CreateLayer("Parallax_Sky", skyZ, 0f);
         AddQuad(Sky, "Sky", new Vector2(-worldWidth * 0.5f, centerY - worldHeight * 0.5f),
@@ -196,11 +202,23 @@ public class PedaLiNatureParallaxBuilder : MonoBehaviour
         go.transform.SetParent(parent, false);
         Mesh mesh = new Mesh { name = objectName + "_Mesh" };
         Vector3[] vertices = new Vector3[points.Count];
+        Vector2[] uvs = new Vector2[points.Count];
         Color[] colors = new Color[points.Count];
+        float minX = float.MaxValue, maxX = float.MinValue;
+        float minY = float.MaxValue, maxY = float.MinValue;
+        for (int i = 0; i < points.Count; i++)
+        {
+            minX = Mathf.Min(minX, points[i].x); maxX = Mathf.Max(maxX, points[i].x);
+            minY = Mathf.Min(minY, points[i].y); maxY = Mathf.Max(maxY, points[i].y);
+        }
+        bool isSky = objectName == "Sky";
         for (int i = 0; i < points.Count; i++)
         {
             vertices[i] = new Vector3(points[i].x, points[i].y, 0f);
-            colors[i] = color;
+            uvs[i] = isSky
+                ? new Vector2(Mathf.InverseLerp(minX, maxX, points[i].x), Mathf.InverseLerp(minY, maxY, points[i].y))
+                : new Vector2(points[i].x * 0.18f, points[i].y * 0.12f);
+            colors[i] = Color.white;
         }
 
         // Triangle fan works for the simple, convex silhouettes used here.
@@ -213,6 +231,7 @@ public class PedaLiNatureParallaxBuilder : MonoBehaviour
         }
 
         mesh.vertices = vertices;
+        mesh.uv = uvs;
         mesh.colors = colors;
         mesh.triangles = triangles;
         mesh.RecalculateBounds();
@@ -225,7 +244,10 @@ public class PedaLiNatureParallaxBuilder : MonoBehaviour
         Material material = CreateUnlitMaterial();
         if (material != null)
         {
-            material.color = Color.white;
+            material.color = color;
+            Texture2D texture = isSky ? skyGradientTexture : detailTexture;
+            if (texture != null && material.HasProperty("_MainTex")) material.mainTexture = texture;
+            if (texture != null && material.HasProperty("_BaseMap")) material.SetTexture("_BaseMap", texture);
             renderer.sharedMaterial = material;
             generatedMaterials.Add(material);
         }
@@ -236,6 +258,7 @@ public class PedaLiNatureParallaxBuilder : MonoBehaviour
     private Material CreateUnlitMaterial()
     {
         Shader shader = Shader.Find("Universal Render Pipeline/Unlit");
+        if (shader == null) shader = Shader.Find("Unlit/Texture");
         if (shader == null) shader = Shader.Find("Unlit/Color");
         if (shader == null) shader = Shader.Find("Sprites/Default");
         if (shader == null)
@@ -245,6 +268,52 @@ public class PedaLiNatureParallaxBuilder : MonoBehaviour
         }
 
         return new Material(shader);
+    }
+
+    private Texture2D CreateDetailTexture()
+    {
+        const int size = 64;
+        Texture2D texture = new Texture2D(size, size, TextureFormat.RGBA32, false);
+        texture.name = "PedaLi_NatureDetail_Runtime";
+        texture.wrapMode = TextureWrapMode.Repeat;
+        texture.filterMode = FilterMode.Bilinear;
+        Random.State oldState = Random.state;
+        Random.InitState(randomSeed + 101);
+        for (int y = 0; y < size; y++)
+        {
+            for (int x = 0; x < size; x++)
+            {
+                float n = Random.Range(0.78f, 1.0f);
+                // Broad, subtle patches give the flat silhouettes a soft material grain.
+                if ((x / 8 + y / 8) % 5 == 0) n *= 0.96f;
+                texture.SetPixel(x, y, new Color(n, n, n, 1f));
+            }
+        }
+        Random.state = oldState;
+        texture.Apply(false, false);
+        generatedTextures.Add(texture);
+        return texture;
+    }
+
+    private Texture2D CreateSkyGradientTexture()
+    {
+        const int width = 2;
+        const int height = 64;
+        Texture2D texture = new Texture2D(width, height, TextureFormat.RGBA32, false);
+        texture.name = "PedaLi_SkyGradient_Runtime";
+        texture.wrapMode = TextureWrapMode.Clamp;
+        texture.filterMode = FilterMode.Bilinear;
+        Color lower = new Color(0.82f, 0.94f, 1f, 1f);
+        Color upper = new Color(1f, 1f, 1f, 1f);
+        for (int y = 0; y < height; y++)
+        {
+            Color tint = Color.Lerp(lower, upper, y / (float)(height - 1));
+            texture.SetPixel(0, y, tint);
+            texture.SetPixel(1, y, tint);
+        }
+        texture.Apply(false, false);
+        generatedTextures.Add(texture);
+        return texture;
     }
 
     private void ClearGeneratedChildren()
@@ -268,6 +337,12 @@ public class PedaLiNatureParallaxBuilder : MonoBehaviour
             if (Application.isPlaying) Destroy(material);
             else DestroyImmediate(material);
         }
+        foreach (Texture2D texture in generatedTextures)
+        {
+            if (texture == null) continue;
+            if (Application.isPlaying) Destroy(texture);
+            else DestroyImmediate(texture);
+        }
     }
 
     private void OnDestroy()
@@ -276,5 +351,7 @@ public class PedaLiNatureParallaxBuilder : MonoBehaviour
             if (mesh != null) Destroy(mesh);
         foreach (Material material in generatedMaterials)
             if (material != null) Destroy(material);
+        foreach (Texture2D texture in generatedTextures)
+            if (texture != null) Destroy(texture);
     }
 }
