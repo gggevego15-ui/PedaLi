@@ -54,7 +54,8 @@ public static class PedaLiGameplayBootstrap
         sprite.material = new Material(Shader.Find("Sprites/Default"));
         var animator = player.AddComponent<PedaLiSpriteAnimator>();
         ConfigurePixelAnimations(animator);
-        player.AddComponent<PedaLiController>();
+        var playerController = player.AddComponent<PedaLiController>();
+        playerController.SetRequireLedgeToGrab(false);
 
         BuildPlatforms(world.transform);
         var cameraFollow = cam.gameObject.GetComponent<PedaLiVerticalCamera>();
@@ -66,7 +67,7 @@ public static class PedaLiGameplayBootstrap
         var backdrop = backdropGO.AddComponent<PedaLiNatureParallaxBuilder>();
         backdrop.Configure(player.transform, cameraFollow, 34f, 76f);
 
-        BuildTouchUI(player.GetComponent<PedaLiController>());
+        BuildTouchUI(playerController);
         Debug.Log("PedaLi runtime gameplay launched. Move with A/D or arrows, jump with Space, grab with E/Shift.");
     }
 
