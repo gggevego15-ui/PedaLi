@@ -17,5 +17,6 @@ Create a Unity 3D scene named `PedaLi`.
 13. For a quick procedural backdrop, create an empty GameObject named `NatureBackdrop` behind the player and add `PedaLiNatureParallaxBuilder`. Press Play to generate the sky, two mountain ridges, forest silhouettes, and clouds. Adjust World Width/Height and the color constants in the script to fit your scene.
 14. Expand `NatureBackdrop` and drag `Parallax_FarMountains_Follow10`, `Parallax_NearMountains_Follow22`, `Parallax_Forest_Follow42`, and `Parallax_Clouds_Follow14` into the camera's Parallax Layers array. Set their Follow Factor values to 0.10, 0.22, 0.42, and 0.14 respectively; enable Ignore Depth for each layer. Keep the generated sky out of the array so it stays fixed.
 15. Keep scenery layers outside the Player hierarchy. If the camera reaches the end of a level, adjust Vertical Limits; the defaults allow a tall, unrestricted climb.
+16. The builder creates a subtle tiled detail texture and a vertical sky-gradient texture at runtime. The generated meshes use UVs and unlit materials, so the backdrop does not depend on scene lighting. These are starter procedural textures; replace or extend them with authored art textures when the final visual style is ready.
 
 This is a source starter, not a complete playable scene or built APK yet.
