@@ -73,15 +73,16 @@ public static class PedaLiGameplayBootstrap
     private static void BuildPlatforms(Transform parent)
     {
         CreatePlatform(parent, "Starting Ledge", new Vector3(0f, 0f, 0.35f), new Vector3(8.5f, 0.65f, 1.2f), new Color(0.18f, 0.40f, 0.29f), true);
-        float[] xs = { -2.2f, 1.9f, -1.4f, 2.25f, 0f, -2.35f, 1.6f, -0.7f, 2.3f, -1.8f, 0.8f, -2.1f, 1.9f, -0.1f, 2.1f, -1.5f, 0.6f, -2.2f, 1.5f, -0.4f, 2.0f, -1.8f, 0.5f, -2.0f, 1.6f, 0f };
-        for (int i = 0; i < xs.Length; i++)
+        float[] xs = { -1.4f, 1.0f, -0.6f, 1.4f, 0f, -1.3f, 1.2f, -0.3f, 1.4f, -1.1f, 0.6f, -1.3f, 1.1f, -0.1f, 1.3f, -0.9f, 0.4f, -1.2f, 0.9f, -0.2f, 1.2f, -1.0f, 0.4f, -1.2f, 1.0f, 0f };
+        for (int i = 0; i < 65; i++)
         {
-            float y = 1.8f + i * 1.42f;
-            float width = (i % 4 == 0) ? 2.7f : 2.15f;
-            Color c = i < 8 ? new Color(0.27f, 0.52f, 0.31f) : i < 17 ? new Color(0.48f, 0.48f, 0.39f) : new Color(0.72f, 0.82f, 0.88f);
-            CreatePlatform(parent, "Climb Platform " + (i + 1), new Vector3(xs[i], y, 0.55f), new Vector3(width, 0.32f, 1.0f), c, false);
+            float x = xs[i % xs.Length];
+            float y = 1.65f + i * 1.25f;
+            float width = (i % 4 == 0) ? 2.7f : 2.25f;
+            Color c = i < 20 ? new Color(0.27f, 0.52f, 0.31f) : i < 45 ? new Color(0.48f, 0.48f, 0.39f) : new Color(0.72f, 0.82f, 0.88f);
+            CreatePlatform(parent, "Climb Platform " + (i + 1), new Vector3(x, y, 0.55f), new Vector3(width, 0.32f, 1.0f), c, false);
             if (i % 3 == 1)
-                CreatePlatform(parent, "Rock Ledge " + i, new Vector3(xs[i] + (xs[i] > 0 ? -0.85f : 0.85f), y + 0.46f, 0.65f), new Vector3(0.55f, 0.18f, 0.8f), new Color(0.40f, 0.45f, 0.40f), false);
+                CreatePlatform(parent, "Rock Ledge " + i, new Vector3(x + (x > 0 ? -0.75f : 0.75f), y + 0.46f, 0.65f), new Vector3(0.55f, 0.18f, 0.8f), new Color(0.40f, 0.45f, 0.40f), false);
         }
     }
 
