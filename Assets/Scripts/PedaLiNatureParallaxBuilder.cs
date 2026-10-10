@@ -13,6 +13,7 @@ public class PedaLiNatureParallaxBuilder : MonoBehaviour
 
     [Header("Biome progression")]
     [SerializeField] private Transform playerTarget;
+    [SerializeField] private PedaLiVerticalCamera cameraController;
     [SerializeField] private bool autoSwitchBiome = true;
     [SerializeField] private float mountainsStartHeight = 35f;
     [SerializeField] private float snowPeaksStartHeight = 75f;
@@ -143,7 +144,18 @@ public class PedaLiNatureParallaxBuilder : MonoBehaviour
         Clouds = CreateLayer("Parallax_Clouds", cloudZ, cloudFollow);
         AddClouds(Clouds, 12);
 
-        Debug.Log("PedaLi nature backdrop generated. Assign Parallax_FarMountains, Parallax_NearMountains, Parallax_Forest and Parallax_Clouds to PedaLiVerticalCamera's Parallax Layers.");
+        if (cameraController != null)
+        {
+            cameraController.SetParallaxLayers(new[]
+            {
+                new PedaLiVerticalCamera.ParallaxLayer { target = FarMountains, followFactor = farMountainFollow, ignoreDepth = true },
+                new PedaLiVerticalCamera.ParallaxLayer { target = NearMountains, followFactor = nearMountainFollow, ignoreDepth = true },
+                new PedaLiVerticalCamera.ParallaxLayer { target = Forest, followFactor = forestFollow, ignoreDepth = true },
+                new PedaLiVerticalCamera.ParallaxLayer { target = Clouds, followFactor = cloudFollow, ignoreDepth = true }
+            });
+        }
+
+        Debug.Log("PedaLi nature backdrop generated for biome " + CurrentBiome + ".");
     }
 
     private Transform CreateLayer(string layerName, float z, float follow)
