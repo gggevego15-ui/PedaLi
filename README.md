@@ -4,6 +4,8 @@ PedaLi is a Unity Android climbing-game prototype: a pixel-art character climbs 
 
 ## Current starter files
 
+- `Assets/Scripts/PedaLiGameplayBootstrap.cs` — creates a playable climbing run at runtime: player, procedural pixel animations, 65 platforms, mobile controls, camera, and biome backdrop.
+- `Assets/Scripts/PedaLiRuntimeWorld.cs` — climb-height HUD.
 - `Assets/Scripts/PedaLiController.cs` — movement, jump, ledge-grab input, and animation-state selection. Pixel animations now update even if a Mecanim Animator is not assigned.
 - `Assets/Scripts/PedaLiSpriteAnimator.cs` — frame-based pixel-art animation for Idle, Run, Jump, Grab, Climb, and Fall.
 - `Assets/Scripts/PedaLiVerticalCamera.cs` — smooth vertical camera follow, look-ahead, and configurable scenery parallax. It can auto-find the player target.
@@ -16,7 +18,7 @@ PedaLi is a Unity Android climbing-game prototype: a pixel-art character climbs 
 
 ## Current limitations
 
-This repository is still a starter-code repository, not yet a complete, verified Unity project. It does not currently include a configured gameplay scene, all imported art assets, Android build settings, or a verified APK. The menu, controller, camera, and backdrop scripts have been edited in GitHub, but have not been compiled or run in Unity in this session.
+This repository is still a starter-code repository, not yet a complete, verified Unity project. It does not currently include a configured gameplay scene, all imported art assets, Android build settings, or a verified APK. The menu, runtime gameplay bootstrap, controller, camera, and backdrop scripts have been edited in GitHub, but have not been compiled or run in Unity in this session.
 
 The ledge-grab system needs a ledge-check transform and colliders on the selected layer. For a quick movement test, disable **Require Ledge To Grab** on the controller. The pixel animator needs actual sliced sprite frames assigned to its animation clips to show frame-by-frame character animation.
 
