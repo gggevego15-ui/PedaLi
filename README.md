@@ -4,30 +4,22 @@ PedaLi is a Unity Android climbing-game prototype: a pixel-art character climbs 
 
 ## Current starter files
 
-- `Assets/Scripts/PedaLiController.cs` — movement, jump, ledge-grab input, and animation-state selection.
+- `Assets/Scripts/PedaLiController.cs` — movement, jump, ledge-grab input, and animation-state selection. Pixel animations now update even if a Mecanim Animator is not assigned.
 - `Assets/Scripts/PedaLiSpriteAnimator.cs` — frame-based pixel-art animation for Idle, Run, Jump, Grab, Climb, and Fall.
-- `Assets/Scripts/PedaLiVerticalCamera.cs` — smooth vertical camera follow with configurable scenery parallax layers.
+- `Assets/Scripts/PedaLiVerticalCamera.cs` — smooth vertical camera follow, look-ahead, and configurable scenery parallax. It can auto-find the player target.
 - `Assets/Scripts/PedaLiNatureParallaxBuilder.cs` — procedural nature backdrop with jungle, mountain, and snow-peak palettes plus height-based biome switching.
 - `Assets/Scripts/PedaLiMobileButton.cs` — touch-button handling for left, right, grab, and jump.
-- `Assets/Scripts/PedaLiMainMenu.cs` — auto-built portrait main menu with illustrated biome backgrounds, Start Climbing, biome selection, and settings.
+- `Assets/Scripts/PedaLiMainMenu.cs` — auto-built portrait menu with biome selection, settings, drifting clouds, floating leaves, and a tiny pixel climber.
 - `Assets/Animation/PedaLiAnimatorSetup.txt` — sprite slicing, import settings, and animation setup.
 - `Assets/Scenes/README.md` — steps to assemble a first test scene.
+- `BUILD_ANDROID.md` — what is needed for a remote Android APK build without installing Unity locally.
 
-## Getting started
+## Current limitations
 
-1. Install a Unity LTS version with **Android Build Support**, Android SDK & NDK Tools, and OpenJDK.
-2. Create/open a Unity 3D project.
-3. Copy the `Assets` folder from this repository into the Unity project.
-4. Create a scene and follow `Assets/Scenes/README.md`. The procedural main menu appears automatically in scenes that do not contain a `PedaLiController`.
-5. Add your gameplay scene to **Build Settings / Build Profiles**. The menu's Start Climbing button opens the first non-menu scene included in the build.
-6. Assign your own pixel-art sprite frames and configure the Animator as described in `Assets/Animation/PedaLiAnimatorSetup.txt`.
-7. Test in the Unity Editor first, then switch the build platform to Android and build an APK.
+This repository is still a starter-code repository, not yet a complete, verified Unity project. It does not currently include a configured gameplay scene, all imported art assets, Android build settings, or a verified APK. The menu, controller, camera, and backdrop scripts have been edited in GitHub, but have not been compiled or run in Unity in this session.
 
-## Important
-
-This repository currently contains starter scripts and setup notes, not a complete Unity project, finished art assets, or a verified APK. The ledge-grab system needs a ledge-check transform and colliders on the selected layer. For a quick movement test, disable **Require Ledge To Grab** on the controller.
+The ledge-grab system needs a ledge-check transform and colliders on the selected layer. For a quick movement test, disable **Require Ledge To Grab** on the controller. The pixel animator needs actual sliced sprite frames assigned to its animation clips to show frame-by-frame character animation.
 
 ## Visual direction
 
-Bright, colorful, realistic 3D nature backgrounds with parallax depth; a crisp pixel-art character with point-filtered sprites; vertical progression and mobile touch controls.
-
+Bright, colorful 3D nature backgrounds with parallax depth; a crisp pixel-art character with point-filtered sprites; vertical progression and mobile touch controls.
