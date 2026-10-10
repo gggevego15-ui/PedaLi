@@ -9,6 +9,17 @@ using UnityEngine;
 [DisallowMultipleComponent]
 public class PedaLiNatureParallaxBuilder : MonoBehaviour
 {
+    public enum Biome { Jungle, Mountains, SnowPeaks }
+
+    [Header("Biome progression")]
+    [SerializeField] private Transform playerTarget;
+    [SerializeField] private bool autoSwitchBiome = true;
+    [SerializeField] private float mountainsStartHeight = 35f;
+    [SerializeField] private float snowPeaksStartHeight = 75f;
+    [SerializeField] private Biome startingBiome = Biome.Jungle;
+    [SerializeField] private bool logBiomeChanges;
+    public Biome CurrentBiome { get; private set; }
+
     [Header("Backdrop dimensions")]
     [SerializeField, Min(10f)] private float worldWidth = 32f;
     [SerializeField, Min(20f)] private float worldHeight = 100f;
@@ -44,15 +55,65 @@ public class PedaLiNatureParallaxBuilder : MonoBehaviour
     private Texture2D detailTexture;
     private Texture2D skyGradientTexture;
 
-    private static readonly Color SkyColor = new Color(0.38f, 0.72f, 0.91f);
-    private static readonly Color FarMountainColor = new Color(0.43f, 0.66f, 0.65f);
-    private static readonly Color NearMountainColor = new Color(0.23f, 0.49f, 0.43f);
-    private static readonly Color ForestColor = new Color(0.10f, 0.31f, 0.25f);
-    private static readonly Color CloudColor = new Color(0.88f, 0.95f, 0.92f);
+    private Color skyColor;
+    private Color farMountainColor;
+    private Color nearMountainColor;
+    private Color forestColor;
+    private Color cloudColor;
 
     private void Start()
     {
+        CurrentBiome = startingBiome;
+        ApplyBiomePalette(CurrentBiome);
         if (buildOnStart) BuildBackdrop();
+    }
+
+    private void Update()
+    {
+        if (!autoSwitchBiome || playerTarget == null) return;
+        Biome desired = playerTarget.position.y >= snowPeaksStartHeight
+            ? Biome.SnowPeaks
+            : playerTarget.position.y >= mountainsStartHeight
+                ? Biome.Mountains
+                : Biome.Jungle;
+        if (desired != CurrentBiome) SetBiome(desired);
+    }
+
+    public void SetBiome(Biome biome)
+    {
+        if (CurrentBiome == biome && generatedMeshes.Count > 0) return;
+        CurrentBiome = biome;
+        ApplyBiomePalette(biome);
+        BuildBackdrop();
+        if (logBiomeChanges) Debug.Log("PedaLi biome changed to " + biome);
+    }
+
+    private void ApplyBiomePalette(Biome biome)
+    {
+        switch (biome)
+        {
+            case Biome.Jungle:
+                skyColor = new Color(0.42f, 0.78f, 0.78f);
+                farMountainColor = new Color(0.30f, 0.55f, 0.46f);
+                nearMountainColor = new Color(0.18f, 0.42f, 0.29f);
+                forestColor = new Color(0.07f, 0.29f, 0.17f);
+                cloudColor = new Color(0.88f, 0.96f, 0.88f);
+                break;
+            case Biome.Mountains:
+                skyColor = new Color(0.40f, 0.70f, 0.90f);
+                farMountainColor = new Color(0.48f, 0.61f, 0.65f);
+                nearMountainColor = new Color(0.34f, 0.47f, 0.48f);
+                forestColor = new Color(0.17f, 0.35f, 0.30f);
+                cloudColor = new Color(0.93f, 0.96f, 0.98f);
+                break;
+            default:
+                skyColor = new Color(0.57f, 0.78f, 0.96f);
+                farMountainColor = new Color(0.83f, 0.90f, 0.95f);
+                nearMountainColor = new Color(0.64f, 0.76f, 0.84f);
+                forestColor = new Color(0.25f, 0.43f, 0.49f);
+                cloudColor = new Color(0.98f, 0.99f, 1f);
+                break;
+        }
     }
 
     [ContextMenu("Build Nature Backdrop")]
@@ -68,13 +129,13 @@ public class PedaLiNatureParallaxBuilder : MonoBehaviour
 
         Sky = CreateLayer("Parallax_Sky", skyZ, 0f);
         AddQuad(Sky, "Sky", new Vector2(-worldWidth * 0.5f, centerY - worldHeight * 0.5f),
-            new Vector2(worldWidth * 0.5f, centerY + worldHeight * 0.5f), SkyColor);
+            new Vector2(worldWidth * 0.5f, centerY + worldHeight * 0.5f), skyColor);
 
         FarMountains = CreateLayer("Parallax_FarMountains", farMountainZ, farMountainFollow);
-        AddMountainRange(FarMountains, 17, worldHeight * 0.10f, worldHeight * 0.38f, FarMountainColor, 1);
+        AddMountainRange(FarMountains, 17, worldHeight * 0.10f, worldHeight * 0.38f, farMountainColor, 1);
 
         NearMountains = CreateLayer("Parallax_NearMountains", nearMountainZ, nearMountainFollow);
-        AddMountainRange(NearMountains, 13, worldHeight * 0.06f, worldHeight * 0.28f, NearMountainColor, 2);
+        AddMountainRange(NearMountains, 13, worldHeight * 0.06f, worldHeight * 0.28f, nearMountainColor, 2);
 
         Forest = CreateLayer("Parallax_Forest", forestZ, forestFollow);
         AddForest(Forest, 38);
@@ -143,12 +204,12 @@ public class PedaLiNatureParallaxBuilder : MonoBehaviour
                 new Vector2(x + width * 0.16f, y + height * 0.48f),
                 new Vector2(x + width * 0.5f, y),
             };
-            AddPolygon(parent, "Tree_" + i, tree, Color.Lerp(ForestColor, NearMountainColor, Random.Range(0f, 0.18f)));
+            AddPolygon(parent, "Tree_" + i, tree, Color.Lerp(forestColor, nearMountainColor, Random.Range(0f, 0.18f)));
         }
 
         // A continuous ground strip hides small gaps at the bottom.
         AddQuad(parent, "ForestGround", new Vector2(-worldWidth, ground - 1f),
-            new Vector2(worldWidth, ground + 0.8f), ForestColor);
+            new Vector2(worldWidth, ground + 0.8f), forestColor);
         Random.state = oldState;
     }
 
@@ -163,7 +224,7 @@ public class PedaLiNatureParallaxBuilder : MonoBehaviour
             float y = Random.Range(centerY - worldHeight * 0.30f, centerY + worldHeight * 0.48f);
             float width = Random.Range(1.2f, 3.6f);
             float height = Random.Range(0.35f, 0.8f);
-            AddCloudShape(parent, "Cloud_" + i, x, y, width, height, CloudColor);
+            AddCloudShape(parent, "Cloud_" + i, x, y, width, height, cloudColor);
         }
 
         Random.state = oldState;
@@ -303,8 +364,8 @@ public class PedaLiNatureParallaxBuilder : MonoBehaviour
         texture.name = "PedaLi_SkyGradient_Runtime";
         texture.wrapMode = TextureWrapMode.Clamp;
         texture.filterMode = FilterMode.Bilinear;
-        Color lower = new Color(0.82f, 0.94f, 1f, 1f);
-        Color upper = new Color(1f, 1f, 1f, 1f);
+        Color lower = Color.Lerp(skyColor, Color.white, 0.18f);
+        Color upper = Color.Lerp(skyColor, Color.white, 0.78f);
         for (int y = 0; y < height; y++)
         {
             Color tint = Color.Lerp(lower, upper, y / (float)(height - 1));
