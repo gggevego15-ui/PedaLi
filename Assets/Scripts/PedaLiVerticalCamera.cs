@@ -71,6 +71,12 @@ public class PedaLiVerticalCamera : MonoBehaviour
 
     private void LateUpdate()
     {
+        // Convenience for starter scenes: automatically follow the PedaLi player if unset.
+        if (target == null)
+        {
+            PedaLiController player = FindObjectOfType<PedaLiController>();
+            if (player != null) target = player.transform;
+        }
         if (target == null) return;
 
         Vector3 desired = target.position + targetOffset;
