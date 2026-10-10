@@ -23,6 +23,7 @@ public class PedaLiController : MonoBehaviour
     [Header("References")]
     [SerializeField] private Animator animator;
     [SerializeField] private SpriteRenderer spriteRenderer;
+    [SerializeField] private PedaLiSpriteAnimator pixelAnimator;
 
     private CharacterController characterController;
     private float horizontalInput;
@@ -46,6 +47,7 @@ public class PedaLiController : MonoBehaviour
         characterController = GetComponent<CharacterController>();
         if (animator == null) animator = GetComponent<Animator>();
         if (spriteRenderer == null) spriteRenderer = GetComponentInChildren<SpriteRenderer>();
+        if (pixelAnimator == null) pixelAnimator = GetComponentInChildren<PedaLiSpriteAnimator>();
         depthZ = transform.position.z;
     }
 
@@ -116,6 +118,21 @@ public class PedaLiController : MonoBehaviour
         animator.SetBool(IsJumping, !characterController.isGrounded && !isGrabbing);
         animator.SetBool(IsGrabbing, isGrabbing);
         animator.SetFloat(VerticalSpeed, verticalVelocity);
+
+        if (pixelAnimator != null)
+        {
+            PedaLiSpriteAnimator.AnimationState state;
+            if (isGrabbing)
+                state = Mathf.Abs(horizontalInput) > 0.01f ? PedaLiSpriteAnimator.AnimationState.Climb : PedaLiSpriteAnimator.AnimationState.Grab;
+            else if (!characterController.isGrounded)
+                state = verticalVelocity > 0f ? PedaLiSpriteAnimator.AnimationState.Jump : PedaLiSpriteAnimator.AnimationState.Fall;
+            else if (Mathf.Abs(horizontalInput) > 0.01f)
+                state = PedaLiSpriteAnimator.AnimationState.Run;
+            else
+                state = PedaLiSpriteAnimator.AnimationState.Idle;
+
+            pixelAnimator.Play(state);
+        }
     }
 
     private void OnDrawGizmosSelected()
