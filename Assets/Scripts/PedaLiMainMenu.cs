@@ -266,7 +266,9 @@ public sealed class PedaLiMainMenu : MonoBehaviour
                 return;
             }
         }
-        ShowMessage("YOUR CLIMB IS ALMOST READY", "Add your gameplay scene to File → Build Settings / Build Profiles. The menu is ready; the game scene will open here once included.");
+        // If no authored gameplay scene is in Build Settings, launch the procedural playable run.
+        PedaLiGameplayBootstrap.Launch();
+        Destroy(gameObject);
     }
 
     private void ShowSettings()
