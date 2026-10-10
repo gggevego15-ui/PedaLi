@@ -11,5 +11,9 @@ Create a Unity 3D scene named `PedaLi`.
 7. Add an EventSystem to the scene if Unity has not created one automatically.
 8. For an initial test, set Require Ledge To Grab to false. Add ledge colliders and a LedgeCheck transform later.
 9. Put the camera in front of the sprite and use a 3D background behind the player.
+10. Add `PedaLiVerticalCamera` to the Main Camera and drag the Player Transform into its Target field.
+11. Set Target Offset to place the camera behind the player (for example, X = 0, Y = 2, Z = -10). Adjust Smooth Time to tune how softly it follows.
+12. To add parallax, create separate scenery layer GameObjects (for example, distant mountains, midground trees, and foreground leaves) and assign them to the Parallax Layers array. Start with Follow Factor around 0.1–0.2 for distant scenery and 0.35–0.6 for nearer scenery. A factor of 0 leaves a layer fixed in world space.
+13. Keep scenery layers outside the Player hierarchy. If the camera reaches the end of a level, adjust Vertical Limits; the defaults allow a tall, unrestricted climb.
 
 This is a source starter, not a complete playable scene or built APK yet.
